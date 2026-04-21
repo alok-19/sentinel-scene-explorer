@@ -45,13 +45,29 @@ You type a location like `Tokyo Japan` or `Zambia`, and the app:
 
 ## How it works
 
-```text
-User query
-  -> Nominatim geocoding
-  -> bounding box
-  -> Element84 STAC search
-  -> filtered Sentinel-2 scenes
-  -> cards + stats + asset links
+```mermaid
+flowchart TD
+    U["User Input<br/>Location + Cloud Filter"]
+
+    subgraph APP["Browser Application"]
+        A["Sentinel Scene Explorer<br/>React + TypeScript SPA"]
+    end
+
+    subgraph SERVICES["Public Data Services"]
+        N["Nominatim API<br/>Geocoding"]
+        S["Element84 Earth Search STAC API<br/>Sentinel-2 L2A Search"]
+    end
+
+    subgraph OUTPUT["Rendered Output"]
+        R["Scene Cards<br/>Stats, Previews, Asset Links"]
+    end
+
+    U --> A
+    A -->|"Geocode query"| N
+    N -->|"Bounding box"| A
+    A -->|"Search last 90 days"| S
+    S -->|"STAC items + assets"| A
+    A --> R
 ```
 
 ## Stack
